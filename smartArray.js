@@ -1,8 +1,7 @@
-
-String.prototype.toChar=function(){
-	return String.fromCharCode(int(this));
-};
-function SmartArray(arr){
+function SmartArray(arr,byVal){
+	/*If true is passed as second argument the array passed is copied into a
+	 new one value by value not by ref*/
+	
 	function int(i){
 		return parseInt(i);
 	}
@@ -14,18 +13,22 @@ function SmartArray(arr){
 		    a[i - 1] = a[j];
 		    a[j] = x;
 		}
+		return a;
+	}
+	function toChar(c){
+		return String.fromCharCode(int(c));
 	}
 	var self=this;
 	self.array=arr||[];
 	if(self.array.constructor!=Array)
 		self.array=[];
+	if(byVal)
+		self.array=arr.slice();
 	self.toChars=function(){
 		var chars=[];
-		for(var i=0,max=self.array.length;i<max;i++){
+		for(var i=0,max=self.array.length;i<max;i++)
 			if(typeof self.array[i]=='number')
-				chars.push(String.fromCharCode(int(self.array[i])));
-
-		}
+				chars.push(toChar(self.array[i]));
 		return chars;
 	};
 	self.frequency=function(item){
@@ -72,8 +75,8 @@ function SmartArray(arr){
 	};
 	self.pickRandomItem=function(){
 		var a=self.array.slice();
-		shuffle(a);
-		return a[0];
+		//Shuffe a copy of the array and return the first element
+		return shuffle(a)[0];
 
 	};
 
