@@ -1,10 +1,20 @@
-function int(i){
-	return parseInt(i);
-}
+
 String.prototype.toChar=function(){
 	return String.fromCharCode(int(this));
 };
 function SmartArray(arr){
+	function int(i){
+		return parseInt(i);
+	}
+	function shuffle(a){
+		var j, x, i;
+		for (i = a.length; i; i--) {
+		    j = Math.floor(Math.random() * i);
+		    x = a[i - 1];
+		    a[i - 1] = a[j];
+		    a[j] = x;
+		}
+	}
 	var self=this;
 	self.array=arr||[];
 	if(self.array.constructor!=Array)
@@ -55,14 +65,16 @@ function SmartArray(arr){
 		self.array=newArray;
 	};
 	self.shuffle=function(){
-		var a=self.array;
-		var j, x, i;
-	    for (i = a.length; i; i -= 1) {
-	        j = Math.floor(Math.random() * i);
-	        x = a[i - 1];
-	        a[i - 1] = a[j];
-	        a[j] = x;
-	    }
+		//Stack overflow question
+		//http://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array-in-javascript
+		shuffle(self.array);
+		
+	};
+	self.pickRandomItem=function(){
+		var a=self.array.slice();
+		shuffle(a);
+		return a[0];
+
 	};
 
 }
