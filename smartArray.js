@@ -6,7 +6,9 @@ String.prototype.toChar=function(){
 };
 function SmartArray(arr){
 	var self=this;
-	self.array=arr;
+	self.array=arr||[];
+	if(self.array.constructor!=Array)
+		self.array=[];
 	self.toChars=function(){
 		var chars=[];
 		for(var i=0,max=self.array.length;i<max;i++){
@@ -42,6 +44,13 @@ function SmartArray(arr){
 		});
 		return self;
 	};
+	self.getArray=function(){
+		return self.array;
+	};
+	self.getLastItem=function(){ 
+		var ar=self.array;
+		return ar[ar.length-1];
+	};
 	self.replaceArray=function(newArray){
 		self.array=newArray;
 	};
@@ -55,4 +64,5 @@ function SmartArray(arr){
 	        a[j] = x;
 	    }
 	};
+
 }
