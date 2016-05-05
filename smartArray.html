@@ -7,10 +7,17 @@
 	<script>
 		var arr=[65,66,67,68,69,70];
 		var x=new SmartArray(arr);
+		function create(){
+			var list=prompt("Enter items to add in array separated by comma");
+			list=list.split(",");
+			x.replaceArray(list);
+		}
+
 	</script>
 </head>
 <body>
 	<button onclick="alert(x.array)">Show array</button>
 	<button onclick="x.shuffle();">Shuffle</button>
+	<button onclick="create()">Create new array</button>
 </body>
 </html>

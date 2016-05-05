@@ -71,13 +71,10 @@ function SmartArray(arr,byVal){
 		//Stack overflow question
 		//http://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array-in-javascript
 		shuffle(self.array);
-		
 	};
 	self.pickRandomItem=function(){
-		var a=self.array.slice();
-		//Shuffe a copy of the array and return the first element
-		return shuffle(a)[0];
-
+		//Shuffe a copy of the array(not the original array) and return the first element
+		return shuffle(self.array.slice())[0];
 	};
 
 }
