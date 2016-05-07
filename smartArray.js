@@ -100,13 +100,17 @@ function SmartArray(arr,byVal){
 		return self.array.slice(start,stop);
 	};
 	self.shift=function(){
-		var deleted_item=self.array[0];
-		self.array=self.array.slice(1);
-		return deleted_item;
+		return self.array.shift();
 	};
 	self.unshift=function(item){
 		if(item)
 			self.array.unshift(item);
 		return self.length();
+	};
+	self.reverse=function(){
+		return self.array.reverse();
+	};
+	self.reduce=function(filter){
+		return self.array.reduce(filter);
 	};
 }
