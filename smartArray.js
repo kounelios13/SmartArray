@@ -1,7 +1,7 @@
 function SmartArray(arr,byVal){
 	/*If true is passed as second argument the array passed is copied into a
 	 new one value by value not by ref*/
-	
+	var isJqueryPresent=typeof jQuery != 'undefined';
 	function int(i){
 		return parseInt(i);
 	}
@@ -23,7 +23,11 @@ function SmartArray(arr,byVal){
 	if(self.array.constructor!=Array)
 		self.array=[];
 	if(byVal)
-		self.array=arr.slice();
+		self.array=arr.slice() || [];
+	
+	self.isEmpty=function(){
+		return self.length() == 0;
+	};
 	self.toChars=function(){
 		var chars=[];
 		for(var i=0,max=self.array.length;i<max;i++)
@@ -52,9 +56,14 @@ function SmartArray(arr,byVal){
 	};
 	self.logKeys=function(){
 		console.log("Now every time you press a key its keycode will be saved in the array you specified");
-		window.addEventListener("keypress",function(e){
-			self.array.push(e.which);
-		});
+		if(isJqueryPresent)
+			$(window).keypress(function (e) {
+				self.array.push(e.which || e.keyCode);
+			});
+		else
+			window.addEventListener("keypress",function(e){
+				self.array.push(e.which || e.keyCode);
+			});
 		return self;
 	};
 	self.getArray=function(){
@@ -62,7 +71,7 @@ function SmartArray(arr,byVal){
 	};
 	self.getLastItem=function(){ 
 		var ar=self.array;
-		return ar[ar.length-1];
+		return !self.array?ar[ar.length-1]:null;
 	};
 	self.replaceArray=function(newArray){
 		self.array=newArray;
@@ -70,11 +79,34 @@ function SmartArray(arr,byVal){
 	self.shuffle=function(){
 		//Stack overflow question
 		//http://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array-in-javascript
-		shuffle(self.array);
+		if(!self.isEmpty())
+			shuffle(self.array);
+		else 
+			throw new Error("Array is empty");
 	};
 	self.pickRandomItem=function(){
 		//Shuffe a copy of the array(not the original array) and return the first element
 		return shuffle(self.array.slice())[0];
 	};
-
+	//Reimplementing Basic Array methods
+	self.length=function(){
+		return self.array.length;
+	};
+	self.push=function(){
+		for(var i=0;i<arguments.length;i++)
+			self.array.push(arguments[i]);
+	};
+	self.slice=function(start,stop){
+		return self.array.slice(start,stop);
+	};
+	self.shift=function(){
+		var deleted_item=self.array[0];
+		self.array=self.array.slice(1);
+		return deleted_item;
+	};
+	self.unshift=function(item){
+		if(item)
+			self.array.unshift(item);
+		return self.length();
+	};
 }
