@@ -23,7 +23,7 @@ function SmartArray(arr,byVal){
 	}
 	var self=this;
 	var _array=arr||[],
-	_backup=null;
+	_backup=[];
 	if(_array.constructor!=Array)
 		_array=[];
 	if(byVal)
@@ -31,6 +31,9 @@ function SmartArray(arr,byVal){
 	
 	self.isEmpty=function(){
 		return self.length() == 0;
+	};
+	self.includes=function(item){
+		return _array.includes(item,arguments[1]);
 	};
 	self.toChars=function(){
 		var chars=[];
@@ -48,7 +51,8 @@ function SmartArray(arr,byVal){
 		return counter;	
 	};
 	self.topItem=function(){
-		var array=_array;
+		var array=_array.slice();
+		array.sort();
 		var max_freq=self.frequency(array[0]);
 		var max_item=array[0];
 		for(var i=0,max=array.length;i<max;i++)
@@ -104,6 +108,9 @@ function SmartArray(arr,byVal){
 		else 
 			throw new Error("Array is empty");
 	};
+	self.fill=function(){
+		return _array.fill(arguments[0],arguments[1],arguments[2]);
+	};
 	self.pickRandomItem=function(){
 		//Shuffe a copy of the array(not the original array) and return the first element
 		return shuffle(_array.slice())[0];
@@ -132,7 +139,7 @@ function SmartArray(arr,byVal){
 		return _array.reduce(filter);
 	};
 	self.sort=function(compareFunction){
-		return compareFunction=='>'?_array.sort(function(a,b){return a+b}):_array.sort(compareFunction);
+		return compareFunction=='>'?_array.sort(function(a,b){return b-a}):_array.sort(compareFunction);
 	}
 	self.join=function(seperator){
 		return _array.join(seperator);
