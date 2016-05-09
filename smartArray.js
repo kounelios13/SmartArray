@@ -18,8 +18,12 @@ function SmartArray(arr,byVal){
 	function toChar(c){
 		return String.fromCharCode(int(c));
 	}
+	function backup(){
+		_backup=_array.slice();
+	}
 	var self=this;
-	var _array=arr||[];
+	var _array=arr||[],
+	_backup=null;
 	if(_array.constructor!=Array)
 		_array=[];
 	if(byVal)
@@ -73,8 +77,24 @@ function SmartArray(arr,byVal){
 		var ar=_array;
 		return !_array?ar[ar.length-1]:null;
 	};
-	self.replaceArray=function(newArray){
-		_array=newArray;
+	self.replaceArray=function(newArray,byVal){
+		backup();
+		_array=byVal?newArray.slice():newArray;
+		return _array;
+	};
+	self.backupArray=function(){
+		backup();
+	};
+	self.restoreBackup=function(){
+		var temp=_backup.slice();
+		return self.replaceArray(temp);
+	};
+	self.getBackup=function(){
+		return _backup;
+	};
+	self.deleteArray=function(){
+		backup();
+		_array.length=0;
 	};
 	self.shuffle=function(){
 		//Stack overflow question
@@ -103,9 +123,7 @@ function SmartArray(arr,byVal){
 		return _array.shift();
 	};
 	self.unshift=function(item){
-		if(item)
-			return _array.unshift(item);
-		
+		return _array.unshift(item);
 	};
 	self.reverse=function(){
 		return _array.reverse();
@@ -114,12 +132,26 @@ function SmartArray(arr,byVal){
 		return _array.reduce(filter);
 	};
 	self.sort=function(compareFunction){
-		return _array.sort(compareFunction);
+		return compareFunction=='>'?_array.sort(function(a,b){return a+b}):_array.sort(compareFunction);
 	}
+	self.join=function(seperator){
+		return _array.join(seperator);
+	};
 	self.toString=function(){
 		return _array.toString();
 	};
 	self.indexOf=function(item){
 		return _array.indexOf(item);
 	};
+	self.lastIndexOf=function(item){
+		return _array.lastIndexOf(item);
+	};
+	self.keys=function(){
+		return _array.keys();
+	};
+	self.map=function(fn){
+		backup();
+		return _array.map(fn);
+	};
+
 }
