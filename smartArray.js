@@ -120,8 +120,8 @@ function SmartArray(arr,byVal){
 		return _array.length;
 	};
 	self.push=function(){
-		for(var i=0;i<arguments.length;i++)
-			_array.push(arguments[i]);
+		var args = Array.prototype.slice.call(arguments);
+    	return Array.prototype.push.apply(_array, args);
 	};
 	self.slice=function(start,stop){
 		return _array.slice(start,stop);
