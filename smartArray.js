@@ -32,8 +32,13 @@ function SmartArray(arr,byVal){
 	self.isEmpty=function(){
 		return self.length() == 0;
 	};
-	self.includes=function(item){
-		return _array.includes(item,arguments[1]);
+	self.includes=function(){
+		var args = Array.prototype.slice.call(arguments);
+    	return Array.prototype.includes.apply(_array, args);
+	};
+	self.every=function(){
+		var args = Array.prototype.slice.call(arguments);
+    	return Array.prototype.every.apply(_array, args);
 	};
 	self.toChars=function(){
 		var chars=[];
@@ -41,6 +46,18 @@ function SmartArray(arr,byVal){
 			if(typeof _array[i]=='number')
 				chars.push(toChar(_array[i]));
 		return chars;
+	};
+	self.getUniqueItems=function(sorted){
+		//Returns an array without duplicated items
+		//If sorted the array returnd will be sorted
+		var unique_set=[];
+		backup();
+		self.sort();
+		for(var i=0,max=_array.length;i<max;i+=self.frequency(_array[i]))
+			if(!unique_set.includes(_array[i]))
+				unique_set.push(_array[i]);
+		self.restoreBackup();
+		return !sorted?unique_set:unique_set.sort(function(a,b){ return a-b;});	
 	};
 	self.frequency=function(item){
 		var counter=0;
@@ -62,6 +79,10 @@ function SmartArray(arr,byVal){
 			}		
 		return max_item;
 	};
+	self.lastItem=function(){
+		var max=_array.length;
+		return _array[max-1];
+	};
 	self.logKeys=function(){
 		console.log("Now every time you press a key its keycode will be saved in the array you specified");
 		if(isJqueryPresent)
@@ -73,6 +94,9 @@ function SmartArray(arr,byVal){
 				_array.push(e.which || e.keyCode);
 			});
 		return self;
+	};
+	self.filter=function(callback){
+		return _array.filter(callback);
 	};
 	self.getArray=function(){
 		return _array;
