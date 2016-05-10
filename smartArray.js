@@ -85,14 +85,13 @@ function SmartArray(arr,byVal){
 	};
 	self.logKeys=function(){
 		console.log("Now every time you press a key its keycode will be saved in the array you specified");
+		function key(e){
+			_array.push(e.which || e.keyCode);
+		}
 		if(isJqueryPresent)
-			$(window).keypress(function (e) {
-				_array.push(e.which || e.keyCode);
-			});
+			$(window).keypress(key);
 		else
-			window.addEventListener("keypress",function(e){
-				_array.push(e.which || e.keyCode);
-			});
+			window.addEventListener("keypress",key);
 		return self;
 	};
 	self.filter=function(callback){
