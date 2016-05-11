@@ -79,10 +79,6 @@ function SmartArray(arr,byVal){
 			}		
 		return max_item;
 	};
-	self.lastItem=function(){
-		var max=_array.length;
-		return _array[max-1];
-	};
 	self.logKeys=function(){
 		console.log("Now every time you press a key its keycode will be saved in the array you specified");
 		function key(e){
