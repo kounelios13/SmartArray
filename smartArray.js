@@ -21,24 +21,29 @@ function SmartArray(arr,byVal){
 	function backup(){
 		_backup=_array.slice();
 	}
+	function getArgs(a){
+		return Array.prototype.slice.call(a);
+	}
+	function updateLength(arr){
+		self.length=_array.length;
+	}
 	var self=this;
+	
 	var _array=arr||[],
 	_backup=[];
 	if(_array.constructor!=Array)
 		_array=[];
 	if(byVal)
 		_array=arr.slice() || [];
-	
+	self.length=_array.length;
 	self.isEmpty=function(){
-		return self.length() == 0;
+		return self.length == 0;
 	};
 	self.includes=function(){
-		var args = Array.prototype.slice.call(arguments);
-    	return Array.prototype.includes.apply(_array, args);
+    	return Array.prototype.includes.apply(_array, getArgs(arguments));
 	};
 	self.every=function(){
-		var args = Array.prototype.slice.call(arguments);
-    	return Array.prototype.every.apply(_array, args);
+    	return Array.prototype.every.apply(_array, getArgs(arguments));
 	};
 	self.toChars=function(){
 		var chars=[];
@@ -61,9 +66,9 @@ function SmartArray(arr,byVal){
 	};
 	self.frequency=function(item){
 		var counter=0;
-		var array=_array;
-		for(var i=0,max=array.length;i<max;i++)
-			if(array[i]==item)
+		var arr=_array;
+		for(var i=0,max=arr.length;i<max;i++)
+			if(item==arr[i])
 				counter++;
 		return counter;	
 	};
@@ -103,6 +108,7 @@ function SmartArray(arr,byVal){
 	self.replaceArray=function(newArray,byVal){
 		backup();
 		_array=byVal?newArray.slice():newArray;
+		updateLength(_array);
 		return _array;
 	};
 	self.backupArray=function(){
@@ -110,6 +116,7 @@ function SmartArray(arr,byVal){
 	};
 	self.restoreBackup=function(){
 		var temp=_backup.slice();
+		updateLength(_array);
 		return self.replaceArray(temp);
 	};
 	self.getBackup=function(){
@@ -117,7 +124,7 @@ function SmartArray(arr,byVal){
 	};
 	self.deleteArray=function(){
 		backup();
-		_array.length=0;
+		_array.length=self.length=0;
 	};
 	self.shuffle=function(){
 		//Stack overflow question
@@ -128,28 +135,34 @@ function SmartArray(arr,byVal){
 			throw new Error("Array is empty");
 	};
 	self.fill=function(){
-		return _array.fill(arguments[0],arguments[1],arguments[2]);
+		var args = Array.prototype.slice.call(arguments);
+    	return Array.prototype.fill.apply(_array, args);
 	};
 	self.pickRandomItem=function(){
 		//Shuffe a copy of the array(not the original array) and return the first element
 		return shuffle(_array.slice())[0];
 	};
 	//Reimplementing Basic Array methods
-	self.length=function(){
-		return _array.length;
-	};
 	self.push=function(){
 		var args = Array.prototype.slice.call(arguments);
-    	return Array.prototype.push.apply(_array, args);
+		self.length = Array.prototype.push.apply(_array,args);
+	};
+	self.pop=function(){
+		self.length--;
+		return _array.pop();
 	};
 	self.slice=function(start,stop){
-		return _array.slice(start,stop);
+		return Array.prototype.slice.apply(_array,getArgs(arguments));
 	};
 	self.shift=function(){
-		return _array.shift();
+		var item= _array.shift();
+		updateLength(_array);
+		return item;
 	};
 	self.unshift=function(item){
-		return _array.unshift(item);
+		_array.unshift(item);
+		updateLength(_array);
+		return self.length;
 	};
 	self.reverse=function(){
 		return _array.reverse();
