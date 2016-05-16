@@ -142,6 +142,19 @@ function SmartArray(arr,byVal){
 		//Shuffe a copy of the array(not the original array) and return the first element
 		return shuffle(_array.slice())[0];
 	};
+	self.swap=function(start_index,end_index){
+		//Swap to items 
+		//Note that swapping 2 numbers will not work since Javascript passes numbers by value not by reference
+		//TODO
+		//Check if indexes are between the array limits
+		backup();
+		var array_max=self.length;
+		if(start_index == array_max || end_index ==array_max)
+			throw new TypeError("Index out of bounds"); 
+		var temp=_array[end_index];
+		_array[end_index]=_array[start_index];
+		_array[start_index]=temp;
+	};
 	//Reimplementing Basic Array methods
 	self.push=function(){
 		var args = Array.prototype.slice.call(arguments);
