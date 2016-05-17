@@ -28,7 +28,6 @@ function SmartArray(arr,byVal){
 		self.length=_array.length;
 	}
 	var self=this;
-	
 	var _array=arr||[],
 	_backup=[];
 	if(_array.constructor!=Array)
@@ -115,9 +114,8 @@ function SmartArray(arr,byVal){
 		backup();
 	};
 	self.restoreBackup=function(){
-		var temp=_backup.slice();
 		updateLength(_array);
-		return self.replaceArray(temp);
+		return self.replaceArray(_backup.slice());
 	};
 	self.getBackup=function(){
 		return _backup;
@@ -134,35 +132,49 @@ function SmartArray(arr,byVal){
 		else 
 			throw new Error("Array is empty");
 	};
-	self.fill=function(){
-		var args = Array.prototype.slice.call(arguments);
-    	return Array.prototype.fill.apply(_array, args);
-	};
 	self.pickRandomItem=function(){
 		//Shuffe a copy of the array(not the original array) and return the first element
 		return shuffle(_array.slice())[0];
 	};
 	self.swap=function(start_index,end_index){
-		//Swap to items 
-		//Note that swapping 2 numbers will not work since Javascript passes numbers by value not by reference
-		//TODO
-		//Check if indexes are between the array limits
 		backup();
 		var array_max=self.length;
-		if(start_index == array_max || end_index ==array_max)
-			throw new TypeError("Index out of bounds"); 
+		if(start_index == array_max || end_index ==array_max || start_index < 0 || end_index < 0)
+			throw new TypeError("Index out of bounds");
+		if(!start_index || !end_index){
+				var msg;
+				if(start_index == 0 || end_index == 0)//Javascript treats 0 as false so when 0 is passed as an argument in 
+					//self.swap an error will be thrown so to avoid it if any of the arguments is 0 we do not throw any errors
+					msg=null;
+				else if(!start_index && !end_index ) 
+					msg="Both indexes are invalid";
+				else if(!start_index)
+					msg="Start index is invalid";
+				else
+					msg="End index is invalid";
+				//If there is an actual error throw the error
+				if(msg)
+					throw new TypeError(msg);
+		}
 		var temp=_array[end_index];
 		_array[end_index]=_array[start_index];
 		_array[start_index]=temp;
 	};
+	self.replaceItem=function(item_index,newObj){
+		backup();
+		_array[item_index]=newObj;
+		return _array;
+	};
 	//Reimplementing Basic Array methods
 	self.push=function(){
-		var args = Array.prototype.slice.call(arguments);
-		self.length = Array.prototype.push.apply(_array,args);
+		return self.length = Array.prototype.push.apply(_array,getArgs(arguments));
 	};
 	self.pop=function(){
 		self.length--;
 		return _array.pop();
+	};
+	self.fill=function(){
+    	return Array.prototype.fill.apply(_array,getArgs(arguments));
 	};
 	self.slice=function(start,stop){
 		return Array.prototype.slice.apply(_array,getArgs(arguments));
@@ -184,7 +196,8 @@ function SmartArray(arr,byVal){
 		return _array.reduce(filter);
 	};
 	self.sort=function(compareFunction){
-		return compareFunction=='>'?_array.sort(function(a,b){return b-a}):_array.sort(compareFunction);
+		var fn=compareFunction=='>'?function(a,b){return b-a;}:compareFunction=='<'?function(a,b){return a -b ;}:compareFunction;
+		return _array.sort(fn);
 	}
 	self.join=function(seperator){
 		return _array.join(seperator);
