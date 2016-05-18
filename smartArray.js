@@ -39,6 +39,7 @@ function SmartArray(arr,byVal){
 	if(byVal)
 		_array=arr.slice() || [];
 	self.length=_array.length;
+
 	updateProps();
 	self.isEmpty=function(){
 		return self.length == 0;
@@ -176,7 +177,29 @@ function SmartArray(arr,byVal){
 	self.replaceItem=function(item_index,newObj){
 		backup();
 		_array[item_index]=newObj;
+		updateProps();
 		return _array;
+	};
+	self.update=function(){
+		if(!byVal)
+			if(arr.length != self.length || arr != _array)
+			{
+				self.length=arr.length;
+				updateProps();
+			}
+	};
+	self.autoUpdate=function(interval){
+		/*TODO
+		check if interval is valid*/
+		if(isNaN(interval))
+			throw new TypeError("Interval value must be a valid number");
+		self.interval=setInterval(function(){
+			self.update();
+			console.log("Array updated");
+		},interval < 0?-interval:interval);
+	};
+	self.disableAutoUpdate=function(){
+		clearInterval(self.interval);
 	};
 	//Reimplementing Basic Array methods
 	self.push=function(){
