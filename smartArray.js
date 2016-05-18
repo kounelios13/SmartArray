@@ -27,6 +27,10 @@ function SmartArray(arr,byVal){
 	function updateLength(arr){
 		self.length=_array.length;
 	}
+	function updateProps(){
+		for(var i = 0;i<self.length;i++)
+			self[i] = _array[i];
+	}
 	var self=this;
 	var _array=arr||[],
 	_backup=[];
@@ -35,6 +39,7 @@ function SmartArray(arr,byVal){
 	if(byVal)
 		_array=arr.slice() || [];
 	self.length=_array.length;
+	updateProps();
 	self.isEmpty=function(){
 		return self.length == 0;
 	};
@@ -87,6 +92,8 @@ function SmartArray(arr,byVal){
 		console.log("Now every time you press a key its keycode will be saved in the array you specified");
 		function key(e){
 			_array.push(e.which || e.keyCode);
+			self.length=_array.length;
+			updateProps();
 		}
 		if(isJqueryPresent)
 			$(window).keypress(key);
@@ -108,6 +115,7 @@ function SmartArray(arr,byVal){
 		backup();
 		_array=byVal?newArray.slice():newArray;
 		updateLength(_array);
+		updateProps();
 		return _array;
 	};
 	self.backupArray=function(){
@@ -123,12 +131,17 @@ function SmartArray(arr,byVal){
 	self.deleteArray=function(){
 		backup();
 		_array.length=self.length=0;
+		updateProps();
 	};
 	self.shuffle=function(){
 		//Stack overflow question
 		//http://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array-in-javascript
-		if(!self.isEmpty())
+		if(!self.isEmpty()){
+			backup();
 			shuffle(_array);
+			if(_backup != _array)
+				updateProps();
+		}
 		else 
 			throw new Error("Array is empty");
 	};
@@ -167,7 +180,9 @@ function SmartArray(arr,byVal){
 	};
 	//Reimplementing Basic Array methods
 	self.push=function(){
-		return self.length = Array.prototype.push.apply(_array,getArgs(arguments));
+		self.length = Array.prototype.push.apply(_array,getArgs(arguments));
+		updateProps();
+		return self.length;
 	};
 	self.pop=function(){
 		self.length--;
@@ -187,17 +202,22 @@ function SmartArray(arr,byVal){
 	self.unshift=function(item){
 		_array.unshift(item);
 		updateLength(_array);
+		updateProps();
 		return self.length;
 	};
 	self.reverse=function(){
-		return _array.reverse();
+		 _array.reverse();
+		 updateProps();
+		 return _array;
 	};
 	self.reduce=function(filter){
 		return _array.reduce(filter);
 	};
 	self.sort=function(compareFunction){
 		var fn=compareFunction=='>'?function(a,b){return b-a;}:compareFunction=='<'?function(a,b){return a -b ;}:compareFunction;
-		return _array.sort(fn);
+		_array.sort(fn);
+		updateProps();
+		return _array;
 	}
 	self.join=function(seperator){
 		return _array.join(seperator);
@@ -216,7 +236,9 @@ function SmartArray(arr,byVal){
 	};
 	self.map=function(fn){
 		backup();
-		return _array.map(fn);
+		_array.map(fn);
+		if(!_backup==_array)
+			updateProps();
 	};
 
 }
