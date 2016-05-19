@@ -7,11 +7,19 @@ function SmartArray(arr,byVal){
 	}
 	function shuffle(a){
 		var j, x, i;
-		for (i = a.length; i; i--) {
+		/*for (i = a.length; i; i--) {
 		    j = Math.floor(Math.random() * i);
 		    x = a[i - 1];
 		    a[i - 1] = a[j];
 		    a[j] = x;
+		}*/
+		i=a.length;
+		while(i){
+			j = Math.floor(Math.random() * i);
+		    x = a[i - 1];
+		    a[i - 1] = a[j];
+		    a[j] = x;
+		    i--;
 		}
 		return a;
 	}
@@ -27,20 +35,37 @@ function SmartArray(arr,byVal){
 	function updateLength(arr){
 		self.length=_array.length;
 	}
-	function updateProps(deleteAll){
-		for(var i = 0;i<self.length;i++)
+	function updateProps(deleteAll,append){
+		var i;
+		if(!append){
+			for(i = 0;i<self.length;i++)
 			if(!deleteAll)
 				self[i] = _array[i];
 			else
 				delete self[i];	
+		}
+		else{
+			for(i=_totalProps;i<_array.length;i++)
+				self[i]=_array[i];
+		}
+		_totalProps=!deleteAll?_array.length:0;	
 	}
 	var self=this;
 	var _array=arr||[],
 	_backup=[];
 	if(_array.constructor!=Array)
 		_array=[];
-	if(byVal)
-		_array=arr.slice() || [];
+	if(byVal && _array.length > 0)
+		//No need to execute if  we have an empty array
+		_array=arr.slice();
+	var _totalProps=0;
+	/*self.dev=function(){ 
+		
+		return {
+			propsNum:(()=>_totalProps),
+			
+		};
+	};*/
 	self.length=_array.length;
 	updateProps();
 	self.isEmpty=function(){
@@ -98,7 +123,7 @@ function SmartArray(arr,byVal){
 		function key(e){
 			_array.push(e.which || e.keyCode);
 			self.length=_array.length;
-			updateProps();
+			updateProps(false,true);
 		}
 		if(isJqueryPresent)
 			$(window).keypress(key);
@@ -219,13 +244,13 @@ function SmartArray(arr,byVal){
 	//Reimplementing Basic Array methods
 	self.push=function(){
 		self.length = Array.prototype.push.apply(_array,getArgs(arguments));
-		updateProps();
+		updateProps(false,true);
 		return self.length;
 	};
 	self.pop=function(){
 		self.length--;
 		var item = _array.pop();
-		updateProps();
+		updateProps(false,true);
 		delete self[self.length];
 		return item;
 	};
@@ -238,8 +263,11 @@ function SmartArray(arr,byVal){
 		return Array.prototype.slice.apply(_array,getArgs(arguments));
 	};
 	self.shift=function(){
+		backup();
 		var item= _array.shift();
 		updateLength(_array);
+		updateProps();
+		delete self[self.length];
 		return item;
 	};
 	self.unshift=function(item){
@@ -249,6 +277,7 @@ function SmartArray(arr,byVal){
 		return self.length;
 	};
 	self.reverse=function(){
+		backup();
 		 _array.reverse();
 		 updateProps();
 		 return _array;
@@ -257,7 +286,10 @@ function SmartArray(arr,byVal){
 		return _array.reduce(filter);
 	};
 	self.sort=function(compareFunction){
-		var fn=compareFunction=='>'?function(a,b){return b-a;}:compareFunction=='<'?function(a,b){return a -b ;}:compareFunction;
+		var fn=compareFunction=='>'?
+			function(a,b){return b-a;}:compareFunction=='<'?
+			function(a,b){return a -b ;}:
+			!compareFunction?function(a,b){return a-b;}:compareFunction;
 		_array.sort(fn);
 		updateProps();
 		return _array;
@@ -280,7 +312,7 @@ function SmartArray(arr,byVal){
 	self.map=function(fn){
 		backup();
 		_array.map(fn);
-		if(!_backup==_array)
+		if(_backup != _array)
 			updateProps();
 	};
 
