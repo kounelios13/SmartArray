@@ -27,9 +27,12 @@ function SmartArray(arr,byVal){
 	function updateLength(arr){
 		self.length=_array.length;
 	}
-	function updateProps(){
+	function updateProps(deleteAll){
 		for(var i = 0;i<self.length;i++)
-			self[i] = _array[i];
+			if(!deleteAll)
+				self[i] = _array[i];
+			else
+				delete self[i];	
 	}
 	var self=this;
 	var _array=arr||[],
@@ -39,7 +42,6 @@ function SmartArray(arr,byVal){
 	if(byVal)
 		_array=arr.slice() || [];
 	self.length=_array.length;
-
 	updateProps();
 	self.isEmpty=function(){
 		return self.length == 0;
@@ -57,17 +59,19 @@ function SmartArray(arr,byVal){
 				chars.push(toChar(_array[i]));
 		return chars;
 	};
-	self.getUniqueItems=function(sorted){
+	self.getUniqueItems=function(sorted,sortFn){
 		//Returns an array without duplicated items
 		//If sorted the array returnd will be sorted
 		var unique_set=[];
+		//TODO
+		//create a copy of the array and sort the copy
 		backup();
 		self.sort();
 		for(var i=0,max=_array.length;i<max;i+=self.frequency(_array[i]))
 			if(!unique_set.includes(_array[i]))
 				unique_set.push(_array[i]);
 		self.restoreBackup();
-		return !sorted?unique_set:unique_set.sort(function(a,b){ return a-b;});	
+		return !sorted?unique_set:unique_set.sort(!sortFn?function(a,b){return a-b}:sortFn);	
 	};
 	self.frequency=function(item){
 		var counter=0;
@@ -124,15 +128,19 @@ function SmartArray(arr,byVal){
 	};
 	self.restoreBackup=function(){
 		updateLength(_array);
-		return self.replaceArray(_backup.slice());
+		self.replaceArray(_backup.slice());
+		updateProps();
+		return _array;
 	};
 	self.getBackup=function(){
 		return _backup;
 	};
 	self.deleteArray=function(){
 		backup();
+		//Delete all properties of current Smart Array object
+		updateProps(true);
 		_array.length=self.length=0;
-		updateProps();
+		
 	};
 	self.shuffle=function(){
 		//Stack overflow question
@@ -189,8 +197,6 @@ function SmartArray(arr,byVal){
 			}
 	};
 	self.autoUpdate=function(interval){
-		/*TODO
-		check if interval is valid*/
 		if(isNaN(interval))
 			throw new TypeError("Interval value must be a valid number");
 		self.interval=setInterval(function(){
@@ -201,6 +207,15 @@ function SmartArray(arr,byVal){
 	self.disableAutoUpdate=function(){
 		clearInterval(self.interval);
 	};
+	self.lastItem=function(){
+		return _array[self.length-1];
+	};
+	self.removeDuplicates=function(){
+		var arr=_array.slice();
+		backup();
+		arr=self.getUniqueItems();
+		self.replaceArray(arr);
+	};
 	//Reimplementing Basic Array methods
 	self.push=function(){
 		self.length = Array.prototype.push.apply(_array,getArgs(arguments));
@@ -209,10 +224,15 @@ function SmartArray(arr,byVal){
 	};
 	self.pop=function(){
 		self.length--;
-		return _array.pop();
+		var item = _array.pop();
+		updateProps();
+		delete self[self.length];
+		return item;
 	};
 	self.fill=function(){
-    	return Array.prototype.fill.apply(_array,getArgs(arguments));
+    	Array.prototype.fill.apply(_array,getArgs(arguments));
+		updateProps();
+		return _array;
 	};
 	self.slice=function(start,stop){
 		return Array.prototype.slice.apply(_array,getArgs(arguments));
