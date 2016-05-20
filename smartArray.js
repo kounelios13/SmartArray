@@ -184,7 +184,6 @@ function SmartArray(arr,byVal){
 		return shuffle(_array.slice())[0];
 	};
 	self.swap=function(start_index,end_index){
-		backup();
 		var array_max=self.length;
 		if(start_index == array_max || end_index ==array_max || start_index < 0 || end_index < 0)
 			throw new TypeError("Index out of bounds");
@@ -203,9 +202,17 @@ function SmartArray(arr,byVal){
 				if(msg)
 					throw new TypeError(msg);
 		}
-		var temp=_array[end_index];
+		//If no error is thrown backup the current array
+		backup();
+		//First swap object properties
+		temp=self[end_index];
+		self[end_index]=self[start_index];
+		self[start_index]=temp;
+		//And then swap the actual items
+		temp=_array[end_index];
 		_array[end_index]=_array[start_index];
 		_array[start_index]=temp;
+				
 	};
 	self.replaceItem=function(item_index,newObj){
 		backup();
