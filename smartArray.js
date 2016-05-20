@@ -7,12 +7,6 @@ function SmartArray(arr,byVal){
 	}
 	function shuffle(a){
 		var j, x, i;
-		/*for (i = a.length; i; i--) {
-		    j = Math.floor(Math.random() * i);
-		    x = a[i - 1];
-		    a[i - 1] = a[j];
-		    a[j] = x;
-		}*/
 		i=a.length;
 		while(i){
 			j = Math.floor(Math.random() * i);
@@ -39,10 +33,10 @@ function SmartArray(arr,byVal){
 		var i;
 		if(!append){
 			for(i = 0;i<self.length;i++)
-			if(!deleteAll)
-				self[i] = _array[i];
-			else
-				delete self[i];	
+				if(!deleteAll)
+					self[i] = _array[i];
+				else
+					delete self[i];	
 		}
 		else{
 			for(i=_totalProps;i<_array.length;i++)
@@ -59,13 +53,6 @@ function SmartArray(arr,byVal){
 		//No need to execute if  we have an empty array
 		_array=arr.slice();
 	var _totalProps=0;
-	/*self.dev=function(){ 
-		
-		return {
-			propsNum:(()=>_totalProps),
-			
-		};
-	};*/
 	self.length=_array.length;
 	updateProps();
 	self.isEmpty=function(){
@@ -189,7 +176,10 @@ function SmartArray(arr,byVal){
 			throw new TypeError("Index out of bounds");
 		if(!start_index || !end_index){
 				var msg;
-				if(start_index == 0 || end_index == 0)//Javascript treats 0 as false so when 0 is passed as an argument in 
+				//Check if one of 2 inexes is not a number
+				if(isNaN(int(start_index)) || isNaN(int(end_index)))
+					msg="Please eneter valid indexes";
+				else if(start_index == 0 || end_index == 0)//Javascript treats 0 as false so when 0 is passed as an argument in 
 					//self.swap an error will be thrown so to avoid it if any of the arguments is 0 we do not throw any errors
 					msg=null;
 				else if(!start_index && !end_index ) 
@@ -220,7 +210,9 @@ function SmartArray(arr,byVal){
 		updateProps();
 		return _array;
 	};
+	/*---------------Important functions------------------*/
 	self.update=function(){
+		//Execute only if array is not copied but passed by reference
 		if(!byVal)
 			if(arr.length != self.length || arr != _array)
 			{
@@ -229,6 +221,9 @@ function SmartArray(arr,byVal){
 			}
 	};
 	self.autoUpdate=function(interval){
+		//If the array passed is copied with .slice() don't do anything
+		if(byVal)
+			return;
 		if(isNaN(interval))
 			throw new TypeError("Interval value must be a valid number");
 		self.interval=setInterval(function(){
@@ -239,6 +234,7 @@ function SmartArray(arr,byVal){
 	self.disableAutoUpdate=function(){
 		clearInterval(self.interval);
 	};
+	/*--------------------------------------------------------*/
 	self.lastItem=function(){
 		return _array[self.length-1];
 	};
@@ -247,6 +243,10 @@ function SmartArray(arr,byVal){
 		backup();
 		arr=self.getUniqueItems();
 		self.replaceArray(arr);
+		//First clear all properties of current smart array
+		updateProps(true);
+		//And reassign the right ones
+		updateProps();
 	};
 	//Reimplementing Basic Array methods
 	self.push=function(){
@@ -256,8 +256,8 @@ function SmartArray(arr,byVal){
 	};
 	self.pop=function(){
 		self.length--;
+		_totalProps--;
 		var item = _array.pop();
-		updateProps(false,true);
 		delete self[self.length];
 		return item;
 	};
