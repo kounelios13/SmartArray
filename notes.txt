@@ -1,0 +1,26 @@
+notes
+Mark array.prototype methods that may not be implemented in some browsers
+create polyfill script for ecmascript 6(and 7) Array.prototype methods that may not be implemented in some  browsers as a seperate file.
+to add with polyfill
+.find()
+.map()
+.reduce()
+.fill()
+.every()
+.lastIndexOf()
+includes()
+.filter()
+
+updateProps() is used to make each item a property of the current object so we can access each item from its index.
+Example
+x=new SmartArray([65,66,65,68]);
+alert(x[0])
+//Alerts 65
+TODO 
+check when updateProps sould be run from the beginning or not to save time and cpu
+when pushing to an array if !byval the length of the current object will not be applied.
+Improve autoUpdate function and update function
+Rework updateProps() .
+It does not have to rewrite all the props from the begining
+In case of push / unshift find how many properties are there to add
+In case of unshift rewrite all properties after deleting them
