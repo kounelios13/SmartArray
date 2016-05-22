@@ -24,3 +24,4 @@ Rework updateProps() .
 It does not have to rewrite all the props from the begining
 In case of push / unshift find how many properties are there to add
 In case of unshift rewrite all properties after deleting them
+updateProps() after replacing an array(replaceArray())

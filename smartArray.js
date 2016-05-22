@@ -29,6 +29,10 @@ function SmartArray(arr,byVal){
 	function updateLength(arr){
 		self.length=_array.length;
 	}
+	function deleteProps(){
+		for(var i=0;i<_array.length;i++)
+			delete self[i];
+	}
 	function updateProps(deleteAll,append){
 		var i;
 		if(!append){
@@ -239,12 +243,10 @@ function SmartArray(arr,byVal){
 		return _array[self.length-1];
 	};
 	self.removeDuplicates=function(){
-		var arr=_array.slice();
 		backup();
-		arr=self.getUniqueItems();
-		self.replaceArray(arr);
+		self.replaceArray(self.getUniqueItems());
 		//First clear all properties of current smart array
-		updateProps(true);
+		deleteProps();
 		//And reassign the right ones
 		updateProps();
 	};
@@ -298,6 +300,8 @@ function SmartArray(arr,byVal){
 			function(a,b){return a -b ;}:
 			!compareFunction?function(a,b){return a-b;}:compareFunction;
 		_array.sort(fn);
+		deleteProps();
+		//updateProps(true);
 		updateProps();
 		return _array;
 	}
