@@ -32,16 +32,14 @@ function SmartArray(arr,byVal){
 	function deleteProps(){
 		for(var i=0;i<_array.length;i++)
 			delete self[i];
+		_totalProps=0;
 	}
-	function updateProps(deleteAll,append){
+	function updateProps(append){
 		var i;
 		if(!append){
 			for(i = 0;i<self.length;i++)
-				if(!deleteAll)
-					self[i] = _array[i];
-				else
-					delete self[i];	
-		}
+				self[i] = _array[i];
+		}	
 		else{
 			for(i=_totalProps;i<_array.length;i++)
 				self[i]=_array[i];
@@ -53,7 +51,7 @@ function SmartArray(arr,byVal){
 	_backup=[];
 	if(_array.constructor!=Array)
 		_array=[];
-	if(byVal && _array.length > 0)
+	if(byVal && arr.constructor == Array)
 		//No need to execute if  we have an empty array
 		_array=arr.slice();
 	var _totalProps=0;
@@ -114,7 +112,7 @@ function SmartArray(arr,byVal){
 		function key(e){
 			_array.push(e.which || e.keyCode);
 			self.length=_array.length;
-			updateProps(false,true);
+			updateProps(true);
 		}
 		if(isJqueryPresent)
 			$(window).keypress(key);
@@ -125,12 +123,13 @@ function SmartArray(arr,byVal){
 	self.filter=function(callback){
 		return _array.filter(callback);
 	};
-	self.getArray=function(){
-		return _array;
+	self.getArray=function(copy){
+		//Returns a reference to the array or a copy of the array
+		return !copy?_array:_array.slice();
 	};
 	self.getLastItem=function(){ 
 		var ar=_array;
-		return !_array?ar[ar.length-1]:null;
+		return !self.isEmpty()?ar[ar.length-1]:null;
 	};
 	self.replaceArray=function(newArray,byVal){
 		backup();
@@ -154,7 +153,7 @@ function SmartArray(arr,byVal){
 	self.deleteArray=function(){
 		backup();
 		//Delete all properties of current Smart Array object
-		updateProps(true);
+		deleteProps();
 		_array.length=self.length=0;
 		
 	};
@@ -253,7 +252,7 @@ function SmartArray(arr,byVal){
 	//Reimplementing Basic Array methods
 	self.push=function(){
 		self.length = Array.prototype.push.apply(_array,getArgs(arguments));
-		updateProps(false,true);
+		updateProps(true);
 		return self.length;
 	};
 	self.pop=function(){
@@ -301,7 +300,6 @@ function SmartArray(arr,byVal){
 			!compareFunction?function(a,b){return a-b;}:compareFunction;
 		_array.sort(fn);
 		deleteProps();
-		//updateProps(true);
 		updateProps();
 		return _array;
 	}
