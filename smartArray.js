@@ -1,4 +1,4 @@
-var smartObjects=[];
+"use strict";
 function SmartArray(arr,byVal){
 	/*If true is passed as second argument the array passed is copied into a
 	 new one value by value not by ref*/
@@ -35,17 +35,21 @@ function SmartArray(arr,byVal){
 			delete self[i];
 		_totalProps=0;
 	}
-	function updateProps(append){
-		var i;
-		if(!append){
-			for(i = 0;i<self.length;i++)
-				self[i] = _array[i];
-		}	
-		else{
-			for(i=_totalProps;i<_array.length;i++)
-				self[i]=_array[i];
-		}
-		_totalProps=_array.length;	
+	/*
+	Recursive implementation
+	function deleteProps(num)
+	{
+		delete self[!num?0:num];
+		if(self[num+1])
+			deleteProps(num+1 || 0);
+		else
+			_totalProps=0;
+	}
+*/	function updateProps(append){
+		var max=self.length,i=append?_totalProps:0;
+		for(i;i<max;i++)
+			self[i] =_array[i];
+		_totalProps=max;	
 	}
 	var self=this;
 	var _array=arr||[],
@@ -238,7 +242,7 @@ function SmartArray(arr,byVal){
 			throw new TypeError("Interval value must be a valid number");
 		self.interval=setInterval(function(){
 			self.update();
-			console.log("Array updated");
+			//console.log("Array updated");
 		},interval < 0?-interval:interval);
 	};
 	self.disableAutoUpdate=function(){
@@ -263,10 +267,9 @@ function SmartArray(arr,byVal){
 		return self.length;
 	};
 	self.pop=function(){
-		self.length--;
 		_totalProps--;
 		var item = _array.pop();
-		delete self[self.length];
+		delete self[--self.length];
 		return item;
 	};
 	self.fill=function(){
@@ -331,5 +334,4 @@ function SmartArray(arr,byVal){
 		if(_backup != _array)
 			updateProps();
 	};
-	smartObjects.push(self);
 }
