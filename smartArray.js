@@ -268,9 +268,8 @@ function SmartArray(arr,byVal){
 	};
 	self.pop=function(){
 		_totalProps--;
-		var item = _array.pop();
 		delete self[--self.length];
-		return item;
+		return _array.pop();
 	};
 	self.fill=function(){
     	Array.prototype.fill.apply(_array,getArgs(arguments));
