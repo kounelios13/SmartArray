@@ -5,4 +5,6 @@ ecmapolyfill.js
 ecmapolyfill.min.js
 push_branch.bat
 minify_res.bat
+debug.log
 elf.fill=function(){.*
+
