@@ -1,3 +1,4 @@
+var smartObjects=[];
 function SmartArray(arr,byVal){
 	/*If true is passed as second argument the array passed is copied into a
 	 new one value by value not by ref*/
@@ -44,7 +45,7 @@ function SmartArray(arr,byVal){
 			for(i=_totalProps;i<_array.length;i++)
 				self[i]=_array[i];
 		}
-		_totalProps=!deleteAll?_array.length:0;	
+		_totalProps=_array.length;	
 	}
 	var self=this;
 	var _array=arr||[],
@@ -55,6 +56,7 @@ function SmartArray(arr,byVal){
 		//No need to execute if  we have an empty array
 		_array=arr.slice();
 	var _totalProps=0;
+	self.constructor="SmartArray";
 	self.length=_array.length;
 	updateProps();
 	self.isEmpty=function(){
@@ -174,12 +176,17 @@ function SmartArray(arr,byVal){
 		return shuffle(_array.slice())[0];
 	};
 	self.swap=function(start_index,end_index){
+		//TODO
+		//if one(or both) of indexes is not a number
+		//but something else try to find the index of the argument passed
+		//e.g.
+		//swap("a","b")->find index of a and b and the perform the swap
 		var array_max=self.length;
 		if(start_index == array_max || end_index ==array_max || start_index < 0 || end_index < 0)
 			throw new TypeError("Index out of bounds");
 		if(!start_index || !end_index){
 				var msg;
-				//Check if one of 2 inexes is not a number
+				//Check if one of 2 indexes is not a number
 				if(isNaN(int(start_index)) || isNaN(int(end_index)))
 					msg="Please eneter valid indexes";
 				else if(start_index == 0 || end_index == 0)//Javascript treats 0 as false so when 0 is passed as an argument in 
@@ -324,5 +331,5 @@ function SmartArray(arr,byVal){
 		if(_backup != _array)
 			updateProps();
 	};
-
+	smartObjects.push(self);
 }
