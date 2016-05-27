@@ -91,13 +91,13 @@ function SmartArray(arr,byVal){
 		var unique_set=[];
 		//TODO
 		//create a copy of the array and sort the copy
-		backup();
-		self.sort();
-		for(var i=0,max=_array.length;i<max;i+=self.frequency(_array[i]))
-			if(!unique_set.includes(_array[i]))
-				unique_set.push(_array[i]);
-		self.restoreBackup();
-		return !sorted?unique_set:unique_set.sort(!sortFn?function(a,b){return a-b}:sortFn);	
+		var ar=self.getArray(true).sort(function(a,b){ return a-b; });
+		for(var i=0,max=ar.length;i<max;i++)
+			/*if(!unique_set.includes(_array[i]))
+				unique_set.push(_array[i]);*/
+			if(unique_set.indexOf(ar[i])==-1)
+				unique_set.push(ar[i]);
+		return unique_set;	
 	};
 	self.frequency=function(item){
 		var counter=0;
@@ -284,6 +284,8 @@ function SmartArray(arr,byVal){
 		return self.length;
 	};
 	self.pop=function(){
+		if(self.isEmpty())
+			throw new Error("Can't pop from empty array.");
 		_totalProps--;
 		delete self[--self.length];
 		return _array.pop();
@@ -297,6 +299,8 @@ function SmartArray(arr,byVal){
 		return Array.prototype.slice.apply(_array,getArgs(arguments));
 	};
 	self.shift=function(){
+		if(self.isEmpty())
+			throw new Error("Can't shift from empty array.");
 		backup();
 		var item= _array.shift();
 		updateLength(_array);
