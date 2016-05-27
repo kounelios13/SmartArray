@@ -89,15 +89,14 @@ function SmartArray(arr,byVal){
 		//Returns an array without duplicated items
 		//If sorted the array returnd will be sorted
 		var unique_set=[];
-		//TODO
-		//create a copy of the array and sort the copy
-		var ar=self.getArray(true).sort(function(a,b){ return a-b; });
+		//create a copy of the array
+		var ar=self.getArray(true);
 		for(var i=0,max=ar.length;i<max;i++)
 			/*if(!unique_set.includes(_array[i]))
 				unique_set.push(_array[i]);*/
 			if(unique_set.indexOf(ar[i])==-1)
 				unique_set.push(ar[i]);
-		return unique_set;	
+		return unique_set.sort();	
 	};
 	self.frequency=function(item){
 		var counter=0;
