@@ -1,3 +1,5 @@
+index.htm
+index.html
 smartArray.py
 smartArray.html
 notes.txt
@@ -8,4 +10,3 @@ debug.log
 elf.fill=function(){.*
 compile.py
 minified_py.js
-index.htm
