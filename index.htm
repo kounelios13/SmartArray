@@ -8,7 +8,8 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 	<script type="text/javascript" src='smartArray.js'></script>
 	<script type="text/javascript">
-		var ar=new SmartArray([0,1,2,3,4,5],true);
+		var a=((a,b)=>new SmartArray(a,b));
+		var ar=a([0,1,2,3,4,5],true);
 		var demo={
 			push:function(){
 				var vals=prompt("Enter values to push seperated by ','").split(',');
