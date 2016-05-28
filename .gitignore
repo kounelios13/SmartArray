@@ -8,3 +8,4 @@ debug.log
 elf.fill=function(){.*
 compile.py
 minified_py.js
+index.htm
