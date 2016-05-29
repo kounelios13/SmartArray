@@ -3,6 +3,12 @@ function SmartArray(arr,byVal){
 	/*If true is passed as second argument the array passed is copied into a
 	 new one value by value not by ref*/
 	var isJqueryPresent=typeof jQuery != 'undefined';
+	function lt(a,b) {
+    	return (typeof a==="number" && typeof b==="number")?a-b:(a+"").localeCompare(b);
+    }
+    function grt(a,b){
+    	return (typeof a==="number" && typeof b==="number")?b-a:(b+"").localeCompare(a);
+    }
 	function int(i){
 		return parseInt(i);
 	}
@@ -85,18 +91,17 @@ function SmartArray(arr,byVal){
 				chars.push(toChar(_array[i]));
 		return chars;
 	};
-	self.getUniqueItems=function(sorted,sortFn){
+	self.getUniqueItems=function(){
 		//Returns an array without duplicated items
 		//If sorted the array returnd will be sorted
 		var unique_set=[];
 		//create a copy of the array
 		var ar=self.getArray(true);
 		for(var i=0,max=ar.length;i<max;i++)
-			/*if(!unique_set.includes(_array[i]))
-				unique_set.push(_array[i]);*/
 			if(unique_set.indexOf(ar[i])==-1)
 				unique_set.push(ar[i]);
-		return unique_set.sort();	
+		unique_set.sort(lt);
+		return unique_set;		
 	};
 	self.frequency=function(item){
 		var counter=0;
@@ -278,11 +283,13 @@ function SmartArray(arr,byVal){
 	};
 	//Reimplementing Basic Array methods
 	self.push=function(){
+		backup();
 		self.length = Array.prototype.push.apply(_array,getArgs(arguments));
 		updateProps(true);
 		return self.length;
 	};
 	self.pop=function(){
+		backup();
 		if(self.isEmpty())
 			throw new Error("Can't pop from empty array.");
 		_totalProps--;
@@ -323,10 +330,12 @@ function SmartArray(arr,byVal){
 		return _array.reduce(filter);
 	};
 	self.sort=function(compareFunction){
-		var fn=compareFunction=='>'?
-			function(a,b){return b-a;}:compareFunction=='<'?
-			function(a,b){return a -b ;}:
-			!compareFunction?function(a,b){return a-b;}:compareFunction;
+		var c=compareFunction;
+		var fn=c==">"?grt:c=="<"?lt:!c?lt:c;
+		/*var fn=compareFunction=='>'?
+			grt:compareFunction=='<'?
+			lt:
+			!compareFunction?lt:compareFunction;*/
 		_array.sort(fn);
 		deleteProps();
 		updateProps();
@@ -354,3 +363,4 @@ function SmartArray(arr,byVal){
 			updateProps();
 	};
 }
+
