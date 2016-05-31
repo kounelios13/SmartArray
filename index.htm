@@ -8,6 +8,9 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 	<script type="text/javascript" src='smartArray.js'></script>
 	<script type="text/javascript">
+		$(document).ready(function(){
+			$(".btn-group .btn-info").removeClass("btn-info").addClass("btn-success").css("margin","1px");
+		});
 		var a=((a,b)=>new SmartArray(a,b));
 		var ar=a([0,1,2,3,4,5],true);
 		var demo={
@@ -34,11 +37,18 @@
 			<h1 class="text-center">Smart Array</h1>
 		</div>
 		<div class="container">
+
 			<div class="row text-center">
-				<div class="col-md-3"> <div class="btn btn-info text-justify" onclick="alert(ar.pop())">pop()</div></div>
-				<div class="col-md-3"> <div class="btn btn-info text-justify" onclick="demo.push()">push()</div></div>
-				<div class="col-md-3"> <div class="btn btn-info text-justify" onclick="demo.reverse()">reverse()</div></div>
-				<div class="col-md-3"> <div class="btn btn-info text-justify" onclick="alert(demo.getUniqueItems())">getUniqueItems()</div></div>
+				<div class="col-md-12">
+					<div class="btn-group">
+							<div class="btn btn-info text-justify" onclick="alert(ar.pop())">pop()</div>
+							<div class="btn btn-info text-justify" onclick="demo.push()">push()</div>
+							<div class="btn btn-info text-justify" onclick="demo.reverse()">reverse()</div>
+							<div class="btn btn-info text-justify" onclick="alert(demo.getUniqueItems())">
+								getUniqueItems()
+							</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

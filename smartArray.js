@@ -3,6 +3,8 @@ function SmartArray(arr,byVal){
 	/*If true is passed as second argument the array passed is copied into a
 	 new one value by value not by ref*/
 	var isJqueryPresent=typeof jQuery != 'undefined';
+	var isBackupEnabled=true;
+	var self=this;
 	function lt(a,b) {
     	return (typeof a==="number" && typeof b==="number")?a-b:(a+"").localeCompare(b);
     }
@@ -31,7 +33,8 @@ function SmartArray(arr,byVal){
 		return String.fromCharCode(int(c));
 	}
 	function backup(){
-		_backup=_array.slice();
+		if(isBackupEnabled)
+			_backup=_array.slice();
 	}
 	function getArgs(a){
 		return Array.prototype.slice.call(a);
@@ -55,15 +58,14 @@ function SmartArray(arr,byVal){
 			_totalProps=0;
 	}
 */	function updateProps(append){
-		var max=self.length,i=append?_totalProps:0;
-		for(i;i<max;i++)
+		var max=self.length,i;
+		for(i=append?_totalProps:0;i<max;i++)
 			self[i] =_array[i];
 		_totalProps=max;	
 	}
 	/*function typo(msg){
 		throw new TypeError(msg);
 	}*/
-	var self=this;
 	var _array=arr||[],
 	_backup=[];
 	if(_array.constructor!=Array)
@@ -93,14 +95,13 @@ function SmartArray(arr,byVal){
 	};
 	self.getUniqueItems=function(){
 		//Returns an array without duplicated items
-		//If sorted the array returnd will be sorted
 		var unique_set=[];
 		//create a copy of the array
-		var ar=self.getArray(true);
+		var ar=self.getArray(true).sort(lt);
 		for(var i=0,max=ar.length;i<max;i++)
 			if(unique_set.indexOf(ar[i])==-1)
 				unique_set.push(ar[i]);
-		unique_set.sort(lt);
+		//unique_set.sort(grt);
 		return unique_set;		
 	};
 	self.frequency=function(item){
@@ -206,9 +207,11 @@ function SmartArray(arr,byVal){
 		//test ends here
 		if(a==-1 || b==-1)
 			throw new TypeError("Invalid indexes");
-		if(a == array_max || b ==array_max || a < 0 || b < 0)
+		else if(a == array_max || b ==array_max || a < 0 || b < 0)
 			throw new TypeError("Index out of bounds");
-		if(!a || !b){
+		else if(a == b)
+			throw new TypeError("Start index and end index can not be the same!!!");
+		else if(!a || !b){
 				var msg;
 				//Check if one of 2 indexes is not a number
 				if(nan(int(a)) || nan(int(b)))
@@ -247,7 +250,7 @@ function SmartArray(arr,byVal){
 	/*---------------Important functions------------------*/
 	self.update=function(){
 		//Execute only if array is not copied but passed by reference
-		if(!byVal)
+		if(!byVal && window.hasOwnProperty(arr))
 			if(arr.length != self.length || arr != _array)
 			{
 				self.length=arr.length;
@@ -269,17 +272,22 @@ function SmartArray(arr,byVal){
 		//if(!byVal)
 		clearInterval(self.interval);
 	};
+	self.disableBackups=function(){ isBackupEnabled=false;};
+	self.enableBackups=function(){ isBackupEnabled=true};
 	/*--------------------------------------------------------*/
 	self.lastItem=function(){
 		return _array[self.length-1];
 	};
 	self.removeDuplicates=function(){
 		backup();
-		self.replaceArray(self.getUniqueItems());
 		//First clear all properties of current smart array
 		deleteProps();
+		self.replaceArray(self.getUniqueItems(true));
+		updateLength(_array);
+		_totalProps=_array.length;
 		//And reassign the right ones
 		updateProps();
+		return _array;
 	};
 	//Reimplementing Basic Array methods
 	self.push=function(){
@@ -330,13 +338,8 @@ function SmartArray(arr,byVal){
 		return _array.reduce(filter);
 	};
 	self.sort=function(compareFunction){
-		var c=compareFunction;
-		var fn=c==">"?grt:c=="<"?lt:!c?lt:c;
-		/*var fn=compareFunction=='>'?
-			grt:compareFunction=='<'?
-			lt:
-			!compareFunction?lt:compareFunction;*/
-		_array.sort(fn);
+		backup();
+		_array.sort(compareFunction);
 		deleteProps();
 		updateProps();
 		return _array;
@@ -359,8 +362,9 @@ function SmartArray(arr,byVal){
 	self.map=function(fn){
 		backup();
 		_array.map(fn);
-		if(_backup != _array)
+		if(_backup.slice() != _array.slice())
 			updateProps();
+		return _array.map(fn);
+
 	};
 }
-
