@@ -63,9 +63,6 @@ function SmartArray(arr,byVal){
 			self[i] =_array[i];
 		_totalProps=max;	
 	}
-	/*function typo(msg){
-		throw new TypeError(msg);
-	}*/
 	var _array=arr||[],
 	_backup=[];
 	if(_array.constructor!=Array)
@@ -101,7 +98,6 @@ function SmartArray(arr,byVal){
 		for(var i=0,max=ar.length;i<max;i++)
 			if(unique_set.indexOf(ar[i])==-1)
 				unique_set.push(ar[i]);
-		//unique_set.sort(grt);
 		return unique_set;		
 	};
 	self.frequency=function(item){
@@ -365,6 +361,5 @@ function SmartArray(arr,byVal){
 		if(_backup.slice() != _array.slice())
 			updateProps();
 		return _array.map(fn);
-
 	};
 }
