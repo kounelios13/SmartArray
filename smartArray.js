@@ -238,9 +238,13 @@ function SmartArray(arr,byVal){
 				
 	};
 	self.replaceItem=function(item_index,newObj){
+		//TODO
+		//CHECK FOR INVALID INDEX
+		if(item_index<0 || item_index=self.length)
+			throw new TypeError("Invalid Index");
 		backup();
 		_array[item_index]=newObj;
-		updateProps();
+		self[item_index]=newObj;
 		return _array;
 	};
 	/*---------------Important functions------------------*/
@@ -293,9 +297,9 @@ function SmartArray(arr,byVal){
 		return self.length;
 	};
 	self.pop=function(){
-		backup();
 		if(self.isEmpty())
 			throw new Error("Can't pop from empty array.");
+		backup();
 		_totalProps--;
 		delete self[--self.length];
 		return _array.pop();
@@ -356,6 +360,8 @@ function SmartArray(arr,byVal){
 		return _array.keys();
 	};
 	self.map=function(fn){
+		if(!fn)
+			throw new TypeError("You can't call .map() without passing a function.");
 		backup();
 		_array.map(fn);
 		if(_backup.slice() != _array.slice())
