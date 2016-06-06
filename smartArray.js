@@ -2,7 +2,6 @@
 function SmartArray(arr,byVal){
 	/*If true is passed as second argument the array passed is copied into a
 	 new one value by value not by ref*/
-	var isJqueryPresent=typeof jQuery != 'undefined';
 	var isBackupEnabled=true;
 	var self=this;
 	function lt(a,b) {
@@ -15,7 +14,7 @@ function SmartArray(arr,byVal){
 		return parseInt(i);
 	}
 	function nan(n){
-		return isNaN(n);
+		return isNaN(int(n));
 	}
 	function shuffle(a){
 		var j, x, i;
@@ -120,19 +119,6 @@ function SmartArray(arr,byVal){
 			}		
 		return max_item;
 	};
-	self.logKeys=function(){
-		console.log("Now every time you press a key its keycode will be saved in the array you specified");
-		function key(e){
-			_array.push(e.which || e.keyCode);
-			self.length=_array.length;
-			updateProps(true);
-		}
-		if(isJqueryPresent)
-			$(window).keypress(key);
-		else
-			window.addEventListener("keypress",key);
-		return self;
-	};
 	self.filter=function(callback){
 		return _array.filter(callback);
 	};
@@ -149,6 +135,8 @@ function SmartArray(arr,byVal){
 		_array=byVal?newArray.slice():newArray;
 		updateLength(_array);
 		updateProps();
+		if(!byVal)
+			console.log("Beware that you need to execute autoUpdate() because the array is passed by reference.");
 		return _array;
 	};
 	self.backupArray=function(){
@@ -165,10 +153,9 @@ function SmartArray(arr,byVal){
 	};
 	self.deleteArray=function(){
 		backup();
-		//Delete all properties of current Smart Array object
+		//Delete all properties of the current Smart Array object
 		deleteProps();
-		_array.length=self.length=0;
-		
+		_array.length=self.length=0;		
 	};
 	self.shuffle=function(){
 		//Stack overflow question
@@ -180,7 +167,7 @@ function SmartArray(arr,byVal){
 				updateProps();
 		}
 		else 
-			throw new Error("Array is empty");
+			throw new Error("Array is empty.");
 	};
 	self.pickRandomItem=function(){
 		//Shuffe a copy of the array(not the original array) and return the first element
@@ -197,9 +184,9 @@ function SmartArray(arr,byVal){
 		var a=start_index,b=end_index;
 		//Test the following part:
 		if(typeof a !='number')
-			a=_array.indexOf(a);
+			a=_array.indexOf(start_index);
 		if(typeof b !='number')
-			b=_array.indexOf(b);
+			b=_array.indexOf(end_index);
 		//test ends here
 		if(a==-1 || b==-1)
 			throw new TypeError("Invalid indexes");
@@ -210,7 +197,7 @@ function SmartArray(arr,byVal){
 		else if(!a || !b){
 				var msg;
 				//Check if one of 2 indexes is not a number
-				if(nan(int(a)) || nan(int(b)))
+				if(nan(a) || nan(b))
 					msg="Please eneter valid indexes";
 				else if(a == 0 || b == 0)//Javascript treats 0 as false so when 0 is passed as an argument in 
 					//self.swap an error will be thrown so to avoid it if any of the arguments is 0 we do not throw any errors
@@ -240,7 +227,7 @@ function SmartArray(arr,byVal){
 	self.replaceItem=function(item_index,newObj){
 		//TODO
 		//CHECK FOR INVALID INDEX
-		if(item_index<0 || item_index=self.length)
+		if(item_index<0 || item_index==self.length)
 			throw new TypeError("Invalid Index");
 		backup();
 		_array[item_index]=newObj;
