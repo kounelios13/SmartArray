@@ -1,5 +1,5 @@
 "use strict";
-function SmartArray(arr,byVal){
+function SmartArray(){
 	/*If true is passed as second argument the array passed is copied into a
 	 new one value by value not by ref*/
 	var isBackupEnabled=true;
@@ -47,32 +47,19 @@ function SmartArray(arr,byVal){
 			delete self[i];
 		_totalProps=0;
 	}
-	/*
-	Recursive implementation
-	function deleteProps(num)
-	{
-		delete self[!num?0:num];
-		if(self[num+1]||0)
-			deleteProps(num+1 || 0);
-		else
-			_totalProps=0;
-	}
-*/	function updateProps(append){
+	function updateProps(append){
 		var max=self.length,i;
 		for(i=append?_totalProps:0;i<max;i++)
 			self[i] =_array[i];
 		_totalProps=max;	
 	}
-	var _array=arr||[],
+	var _array=[],
 	_backup=[];
 	if(_array.constructor!=Array)
 		_array=[];
-	if(byVal && arr.constructor == Array)
-		//No need to execute if  we have an empty array
-		_array=arr.slice();
 	var _totalProps=0;
 	self.constructor="SmartArray";
-	self.length=_array.length;
+	self.length=0;
 	updateProps();
 	self.isEmpty=function(){
 		return self.length == 0;
@@ -131,24 +118,34 @@ function SmartArray(arr,byVal){
 		var ar=_array;
 		return !self.isEmpty()?ar[ar.length-1]:null;
 	};
-	self.replaceArray=function(newArray,byVal){
+	self.replaceArray=function(newArray){
 		backup();
-		_array=byVal?newArray.slice():newArray;
+		_array=newArray.slice();
 		updateLength(_array);
 		updateProps();
-		if(!byVal)
-			console.log("Beware that you need to execute autoUpdate() because the array is passed by reference.");
 		return _array;
 	};
 	self.backupArray=function(){
 		backup();
 	};
 	self.restoreBackup=function(){
+		if(!isBackupEnabled)
+			return;
 		updateLength(_array);
 		self.replaceArray(_backup.slice());
 		updateProps();
 		return _array;
 	};
+	self.delete=function(index){
+		var i=index;
+		if(typeof i ==='string')
+			i=_array.indexOf(index);
+		if(!i || i >= self.length || i < 0)
+			throw new Error("Invalid index");
+		delete self[i];
+		self.length--;
+		return delete _array[i];
+	}
 	self.getBackup=function(){
 		return _backup;
 	};
@@ -175,12 +172,6 @@ function SmartArray(arr,byVal){
 		return shuffle(_array.slice())[0];
 	};
 	self.swap=function(start_index,end_index){
-		//TODO
-		//if one(or both) of indexes is not a number
-		//but something else try to find the index of the argument passed
-		//e.g.
-		//swap("a","b")->find index of a and b and the perform the swap
-		//assign start index to a and end index to b
 		var array_max=self.length;
 		var a=start_index,b=end_index;
 		//Test the following part:
@@ -222,47 +213,18 @@ function SmartArray(arr,byVal){
 		//And then swap the actual items
 		temp=_array[b];
 		_array[b]=_array[a];
-		_array[a]=temp;
-				
+		_array[a]=temp;				
 	};
 	self.replaceItem=function(item_index,newObj){
-		//TODO
-		//CHECK FOR INVALID INDEX
-		if(item_index<0 || item_index==self.length)
+		if(item_index<0 || item_index>=self.length)
 			throw new TypeError("Invalid Index");
 		backup();
 		_array[item_index]=newObj;
 		self[item_index]=newObj;
 		return _array;
 	};
-	/*---------------Important functions------------------*/
-	self.update=function(){
-		//Execute only if array is not copied but passed by reference
-		if(!byVal && window.hasOwnProperty(arr))
-			if(arr.length != self.length || arr != _array)
-			{
-				self.length=arr.length;
-				updateProps();
-			}
-	};
-	self.autoUpdate=function(interval){
-		//If the array passed is copied with .slice() don't do anything
-		if(byVal)
-			return;
-		if(nan(interval))
-			throw new TypeError("Interval value must be a valid number");
-		self.interval=setInterval(function(){
-			self.update();
-			//console.log("Array updated");
-		},interval < 0?-interval:interval);
-	};
-	self.disableAutoUpdate=function(){
-		//if(!byVal)
-		clearInterval(self.interval);
-	};
 	self.disableBackups=function(){ isBackupEnabled=false;};
 	self.enableBackups=function(){ isBackupEnabled=true};
-	/*--------------------------------------------------------*/
 	self.lastItem=function(){
 		return _array[self.length-1];
 	};
