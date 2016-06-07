@@ -4,6 +4,7 @@ function SmartArray(arr,byVal){
 	 new one value by value not by ref*/
 	var isBackupEnabled=true;
 	var self=this;
+	//var log=function(o){console.log(o);};
 	function lt(a,b) {
     	return (typeof a==="number" && typeof b==="number")?a-b:(a+"").localeCompare(b);
     }
@@ -183,10 +184,10 @@ function SmartArray(arr,byVal){
 		var array_max=self.length;
 		var a=start_index,b=end_index;
 		//Test the following part:
-		if(typeof a !='number')
-			a=_array.indexOf(start_index);
-		if(typeof b !='number')
-			b=_array.indexOf(end_index);
+		if(typeof a ==="string")
+			a=_array.indexOf(a);
+		if(typeof b ==="string")
+			b=_array.indexOf(b);
 		//test ends here
 		if(a==-1 || b==-1)
 			throw new TypeError("Invalid indexes");
@@ -215,13 +216,13 @@ function SmartArray(arr,byVal){
 		//If no error is thrown backup the current array
 		backup();
 		//First swap object properties
-		temp=self[end_index];
-		self[end_index]=self[start_index];
-		self[start_index]=temp;
+		var temp=self[b];
+		self[b]=self[a];
+		self[a]=temp;
 		//And then swap the actual items
-		temp=_array[end_index];
-		_array[end_index]=_array[start_index];
-		_array[start_index]=temp;
+		temp=_array[b];
+		_array[b]=_array[a];
+		_array[a]=temp;
 				
 	};
 	self.replaceItem=function(item_index,newObj){
