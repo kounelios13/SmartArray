@@ -110,6 +110,9 @@ function SmartArray(){
 	self.filter=function(callback){
 		return _array.filter(callback);
 	};
+	self.find=function(fn){
+		return _array.find(fn);
+	}
 	self.getArray=function(){
 		//Returns a reference to the array or a copy of the array
 		return _array.slice();
