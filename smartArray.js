@@ -73,7 +73,7 @@ function SmartArray(){
 	self.toChars=function(){
 		var chars=[];
 		for(var i=0,max=_array.length;i<max;i++)
-			if(typeof _array[i]=='number')
+			if(typeof _array[i] === 'number')
 				chars.push(toChar(_array[i]));
 		return chars;
 	};
@@ -110,9 +110,9 @@ function SmartArray(){
 	self.filter=function(callback){
 		return _array.filter(callback);
 	};
-	self.getArray=function(copy){
+	self.getArray=function(){
 		//Returns a reference to the array or a copy of the array
-		return !copy?_array:_array.slice();
+		return _array.slice();
 	};
 	self.getLastItem=function(){ 
 		var ar=_array;
@@ -223,8 +223,8 @@ function SmartArray(){
 		self[item_index]=newObj;
 		return _array;
 	};
-	self.disableBackups=function(){ isBackupEnabled=false;};
-	self.enableBackups=function(){ isBackupEnabled=true};
+	self.disableBackups=function(){ isBackupEnabled=false;_backup=null;};
+	self.enableBackups=function(){ isBackupEnabled=true;_backup=[];};
 	self.lastItem=function(){
 		return _array[self.length-1];
 	};
