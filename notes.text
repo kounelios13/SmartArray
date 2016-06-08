@@ -1,0 +1,10 @@
+check for bugs
+self.getUniqueItems
+self.removeDuplicates
+self.sort() =>remove shoortcute for pre built function.The user has to provide its own sorting funtion
+self.replaceItem()=> do not use updateProps() just use something like I used in swap
+consider the following:
+x=new SmartArray([0,1,2,3,4,5])
+/=-->0,1,2,3,4,5
+if you delete x[3] you will delete the property from the object but the actual item inside the array will not be deleted
+Implemet delete(item_index) function to solve the previous problem
