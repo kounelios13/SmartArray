@@ -6,10 +6,10 @@ function SmartArray(){
 	var self=this;
 	//var log=function(o){console.log(o);};
 	function lt(a,b) {
-    	return (typeof a==="number" && typeof b==="number")?a-b:(a+"").localeCompare(b);
+    	return ('number'=== typeof (a && b))?a-b:(a+"").localeCompare(b);
     }
     function grt(a,b){
-    	return (typeof a==="number" && typeof b==="number")?b-a:(b+"").localeCompare(a);
+    	return ('number'=== typeof( a &&  b))?b-a:(b+"").localeCompare(a);
     }
 	function int(i){
 		return parseInt(i);
@@ -107,12 +107,6 @@ function SmartArray(){
 			}		
 		return max_item;
 	};
-	self.filter=function(callback){
-		return _array.filter(callback);
-	};
-	self.find=function(fn){
-		return _array.find(fn);
-	}
 	self.getArray=function(){
 		//Returns a reference to the array or a copy of the array
 		return _array.slice();
@@ -262,6 +256,15 @@ function SmartArray(){
 		updateProps();
 		return _array;
 	};
+	self.filter=function(callback){
+		return _array.filter(callback);
+	};
+	self.find=function(fn){
+		return _array.find(fn);
+	};
+	self.values=function(){
+		return _array.values();
+	};
 	self.slice=function(start,stop){
 		return Array.prototype.slice.apply(_array,getArgs(arguments));
 	};
@@ -320,5 +323,8 @@ function SmartArray(){
 		if(_backup.slice() != _array.slice())
 			updateProps();
 		return _array.map(fn);
+	};
+	self.forEach=function(callback,thisArg){
+		return _array.forEach(callback,thisArg);
 	};
 }
