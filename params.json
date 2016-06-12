@@ -1,0 +1,6 @@
+{
+  "name": "Smartarray",
+  "tagline": "",
+  "body": "#SmartArray\r\nA mini tool that adds some extra functionality to any array given without modifying Array prototype.\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
