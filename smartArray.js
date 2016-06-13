@@ -1,11 +1,8 @@
 "use strict";
 function SmartArray(){
-	/*If true is passed as second argument the array passed is copied into a
-	 new one value by value not by ref*/
 	var isBackupEnabled=true;
 	var self=this;
 	var noDuplicates=false;
-	//var log=function(o){console.log(o);};
 	function lt(a,b) {
     	return ('number'=== typeof (a && b))?a-b:(a+"").localeCompare(b);
     }
@@ -265,8 +262,8 @@ function SmartArray(){
 		updateProps();
 		return _array;
 	};
-	self.filter=function(callback){
-		return _array.filter(callback);
+	self.filter=function(){
+		return Array.prototype.filter.apply(_array,getArgs(arguments));
 	};
 	self.find=function(fn){
 		return _array.find(fn);
@@ -299,8 +296,8 @@ function SmartArray(){
 		 updateProps();
 		 return _array;
 	};
-	self.reduce=function(filter){
-		return _array.reduce(filter);
+	self.reduce=function(){
+		return Array.prototype.reduce.apply(_array,getArgs(arguments));
 	};
 	self.sort=function(compareFunction){
 		backup();
@@ -318,8 +315,8 @@ function SmartArray(){
 	self.indexOf=function(item){ 
 		return _array.indexOf(item);
 	};
-	self.lastIndexOf=function(item){
-		return _array.lastIndexOf(item);
+	self.lastIndexOf=function(){
+		return Array.prototype.lastIndexOf.apply(_array,getArgs(arguments));
 	};
 	self.keys=function(){
 		return _array.keys();
@@ -334,5 +331,8 @@ function SmartArray(){
 	};
 	self.forEach=function(callback,thisArg){
 		return _array.forEach(callback,thisArg);
+	};
+	self.every=function(){
+		return Array.prototype.every.apply(_array,getArgs(arguments));
 	};
 }
