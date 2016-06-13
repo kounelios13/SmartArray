@@ -8,7 +8,7 @@ function SmartArray(){
 	function lt(a,b) {
     	return ('number'=== typeof (a && b))?a-b:(a+"").localeCompare(b);
     }
-    function int(i){
+	function int(i){
 		return parseInt(i);
 	}
 	function nan(n){
@@ -317,8 +317,7 @@ function SmartArray(){
 			throw new TypeError("You can't call .map() without passing a function.");
 		backup();
 		_array.map(fn);
-		if(_backup.slice() != _array.slice())
-			updateProps();
+		updateProps();
 		return _array.map(fn);
 	};
 	self.forEach=function(callback,thisArg){
