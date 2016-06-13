@@ -4,6 +4,7 @@ function SmartArray(){
 	 new one value by value not by ref*/
 	var isBackupEnabled=true;
 	var self=this;
+	var noDuplicates=false;
 	//var log=function(o){console.log(o);};
 	function lt(a,b) {
     	return ('number'=== typeof (a && b))?a-b:(a+"").localeCompare(b);
@@ -233,10 +234,21 @@ function SmartArray(){
 		updateProps();
 		return _array;
 	};
+	self.denyDuplicates=function(){
+		noDuplicates=true;
+		return self.removeDuplicates();
+	};
+	self.allowDuplicates=function(){
+		noDuplicates=false;
+	};
 	//Reimplementing Basic Array methods
 	self.push=function(){
 		backup();
 		self.length = Array.prototype.push.apply(_array,getArgs(arguments));
+		if(noDuplicates){
+			self.removeDuplicates();
+			return self.length;
+		}
 		updateProps(true);
 		return self.length;
 	};
