@@ -8,10 +8,7 @@ function SmartArray(){
 	function lt(a,b) {
     	return ('number'=== typeof (a && b))?a-b:(a+"").localeCompare(b);
     }
-    function grt(a,b){
-    	return ('number'=== typeof( a &&  b))?b-a:(b+"").localeCompare(a);
-    }
-	function int(i){
+    function int(i){
 		return parseInt(i);
 	}
 	function nan(n){
