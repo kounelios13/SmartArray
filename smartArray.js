@@ -3,6 +3,16 @@ function SmartArray(){
 	var isBackupEnabled=true;
 	var self=this;
 	var noDuplicates=false;
+	function checkIndex(i){
+		//TODO
+		//rewrite with ternary operator
+		var ok;
+		if(typeof i === 'string')
+			ok = _array.indexOf(i) != -1;
+		else
+			ok = i >=0 && i <_array.length;
+		return ok;
+	}
 	function lt(a,b) {
     	return ('number'=== typeof (a && b))?a-b:(a+"").localeCompare(b);
     }
@@ -128,11 +138,8 @@ function SmartArray(){
 		updateProps();
 		return _array;
 	};
-	self.delete=function(index){
-		var i=index;
-		if(typeof i ==='string')
-			i=_array.indexOf(index);
-		if(!i || i >= self.length || i < 0)
+	self.delete=function(i){
+		if(!checkIndex(i))
 			throw new Error("Invalid index");
 		delete self[i];
 		self.length--;
@@ -207,13 +214,20 @@ function SmartArray(){
 		_array[b]=_array[a];
 		_array[a]=temp;				
 	};
-	self.replaceItem=function(item_index,newObj){
-		if(item_index<0 || item_index>=self.length)
-			throw new TypeError("Invalid Index");
+	self.replaceItem=function(item_index,newObj,lazyVal){
+		//lazyVal-->don't check for invalid indexes
+		if(!lazyVal)
+			if(item_index<0 || item_index>=self.length)
+				throw new TypeError("Invalid Index");
 		backup();
 		_array[item_index]=newObj;
 		self[item_index]=newObj;
+		if(lazyVal)
+			updateLength(_array);
 		return _array;
+	};
+	self.set=function(index,obj){
+		return self.replaceItem(index,obj,true);
 	};
 	self.disableBackups=function(){ isBackupEnabled=false;_backup=null;};
 	self.enableBackups=function(){ isBackupEnabled=true;_backup=[];};
@@ -243,6 +257,7 @@ function SmartArray(){
 		backup();
 		self.length = Array.prototype.push.apply(_array,getArgs(arguments));
 		if(noDuplicates){
+			//no need to call updateProps() since it will be called in removeDuplicates()
 			self.removeDuplicates();
 			return self.length;
 		}
@@ -266,7 +281,7 @@ function SmartArray(){
 		return Array.prototype.filter.apply(_array,getArgs(arguments));
 	};
 	self.find=function(fn){
-		return _array.find(fn);
+		return Array.prototype.find.apply(_array,getArgs(arguments));
 	};
 	self.values=function(){
 		return _array.values();
