@@ -1,18 +1,14 @@
 "use strict";
-function SmartArray(){
+function SmartArray({
 	var isBackupEnabled=true;
 	var self=this;
-	var noDuplicates=false;
-	function checkIndex(i){
-		//TODO
-		//rewrite with ternary operator
-		var ok;
-		if(typeof i === 'string')
-			ok = _array.indexOf(i) != -1;
+	self.test=function(n){
+		if(n==0)
+			return isBackupEnabled;
 		else
-			ok = i >=0 && i <_array.length;
-		return ok;
-	}
+			return noDuplicates;
+	};
+	var noDuplicates=false;
 	function lt(a,b) {
     	return ('number'=== typeof (a && b))?a-b:(a+"").localeCompare(b);
     }
@@ -257,7 +253,10 @@ function SmartArray(){
 		backup();
 		self.length = Array.prototype.push.apply(_array,getArgs(arguments));
 		if(noDuplicates){
+<<<<<<< HEAD
 			//no need to call updateProps() since it will be called in removeDuplicates()
+=======
+>>>>>>> 67f955aa9aef66c3a6e9cd90a64778a06ab002e6
 			self.removeDuplicates();
 			return self.length;
 		}
