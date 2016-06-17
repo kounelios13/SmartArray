@@ -8,3 +8,4 @@ x=new SmartArray([0,1,2,3,4,5])
 /=-->0,1,2,3,4,5
 if you delete x[3] you will delete the property from the object but the actual item inside the array will not be deleted
 Implemet delete(item_index) function to solve the previous problem
+checkIndex()--> edit function to detect if an index of an array passed is a valid one.We might want to pass two indexes.Do the same for all indexes passed(max indices->2).-->finished

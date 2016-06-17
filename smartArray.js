@@ -3,24 +3,23 @@ function SmartArray(){
 	var isBackupEnabled=true;
 	var self=this;
 	var noDuplicates=false;
-	function checkIndex(i){
-		//TODO
-		//rewrite with ternary operator
-		var ok;
-		if(typeof i === 'string')
-			ok = _array.indexOf(i) != -1;
-		else
-			ok = i >=0 && i <_array.length;
-		return ok;
+	function checkIndex(){
+		var args=arguments,ar=_array,a=b=args[0],len=ar.length;
+		var twoArgs=arguments.length > 1;
+		if(twoArgs){
+			b = args[1];
+			if(typeof b != 'number')
+				b = ar.indexOf(b);
+		}
+		if(typeof a !='number')
+			a=ar.indexOf(a);
+		return !twoArgs? a!= -1 && (a >= 0 && a<len):(a != - 1 && b != -1) && (a != b) && (a>=0 && a < len) && (b>=0 && b < len);
 	}
 	function lt(a,b) {
     	return ('number'=== typeof (a && b))?a-b:(a+"").localeCompare(b);
     }
 	function int(i){
 		return parseInt(i);
-	}
-	function nan(n){
-		return isNaN(int(n));
 	}
 	function shuffle(a){
 		var j, x, i;
@@ -48,7 +47,7 @@ function SmartArray(){
 		self.length=_array.length;
 	}
 	function deleteProps(){
-		for(var i=0;i<_array.length;i++)
+		for(var i=0,max=_array.length;i<max;i++)
 			delete self[i];
 		_totalProps=0;
 	}
@@ -173,36 +172,8 @@ function SmartArray(){
 	self.swap=function(start_index,end_index){
 		var array_max=self.length;
 		var a=start_index,b=end_index;
-		//Test the following part:
-		if(typeof a ==="string")
-			a=_array.indexOf(a);
-		if(typeof b ==="string")
-			b=_array.indexOf(b);
-		//test ends here
-		if(a==-1 || b==-1)
-			throw new TypeError("Invalid indexes");
-		else if(a == array_max || b ==array_max || a < 0 || b < 0)
-			throw new TypeError("Index out of bounds");
-		else if(a == b)
-			throw new TypeError("Start index and end index can not be the same!!!");
-		else if(!a || !b){
-				var msg;
-				//Check if one of 2 indexes is not a number
-				if(nan(a) || nan(b))
-					msg="Please eneter valid indexes";
-				else if(a == 0 || b == 0)//Javascript treats 0 as false so when 0 is passed as an argument in 
-					//self.swap an error will be thrown so to avoid it if any of the arguments is 0 we do not throw any errors
-					msg=null;
-				else if(!a && !b ) 
-					msg="Both indexes are invalid";
-				else if(!a)
-					msg="Start index is invalid";
-				else
-					msg="End index is invalid";
-				//If there is an actual error throw the error
-				if(msg)
-					throw new TypeError(msg);
-		}
+		if(!checkIndex(a,b))
+			throw new TypeError("Invalid index values");
 		//If no error is thrown backup the current array
 		backup();
 		//First swap object properties
@@ -217,7 +188,7 @@ function SmartArray(){
 	self.replaceItem=function(item_index,newObj,lazyVal){
 		//lazyVal-->don't check for invalid indexes
 		if(!lazyVal)
-			if(item_index<0 || item_index>=self.length)
+			if(!checkIndex(item_index))
 				throw new TypeError("Invalid Index");
 		backup();
 		_array[item_index]=newObj;
