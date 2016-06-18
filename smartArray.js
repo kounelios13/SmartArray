@@ -2,7 +2,8 @@
 function SmartArray(){
 	var isBackupEnabled=true,noDuplicates=false,self=this;
 	function checkIndex(){
-		var args=arguments,ar=_array,a=b=args[0],len=ar.length;
+		var b;
+		var args=arguments,ar=_array,a=args[0],len=ar.length;
 		var twoArgs=arguments.length > 1;
 		//check if we want to check 2 indices
 		if(twoArgs){
