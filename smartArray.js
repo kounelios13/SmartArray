@@ -1,18 +1,16 @@
 "use strict";
 function SmartArray(){
 	var isBackupEnabled=true,noDuplicates=false,self=this;
+	function toNum(i){
+		return 'number'===typeof i?i:_array.indexOf(i);
+	}
 	function checkIndex(){
-		var args=arguments,ar=_array,a=b=args[0],len=ar.length;
+		var args=arguments,ar=_array,a=args[0],len=ar.length,b;
 		var twoArgs=arguments.length > 1;
 		//check if we want to check 2 indices
-		if(twoArgs){
+		if(twoArgs)
 			b = args[1];
-			if(typeof b != 'number')
-				b = ar.indexOf(b);
-		}
-		if(typeof a !='number')
-			a=ar.indexOf(a);
-		return !twoArgs? a!= -1 && (a >= 0 && a<len):(a != - 1 && b != -1) && (a != b) && (a>=0 && a < len) && (b>=0 && b < len);
+		return !twoArgs? (a>-1 && a<len):(a >-1 && b >-1) && (a != b) &&  (a < len &&  b < len);
 	}
 	function lt(a,b) {
     	return ('number'=== typeof (a && b))?a-b:(a+"").localeCompare(b);
@@ -136,9 +134,9 @@ function SmartArray(){
 	self.delete=function(i){
 		if(!checkIndex(i))
 			throw new Error("Invalid index");
-		delete self[i];
+		delete self[toNum(i)];
 		self.length--;
-		return delete _array[i];
+		return delete _array[toNum(i)];
 	}
 	self.getBackup=function(){
 		return _backup;
@@ -166,7 +164,7 @@ function SmartArray(){
 		return shuffle(_array.slice())[0];
 	};
 	self.swap=function(start_index,end_index){
-		var a=start_index,b=end_index;
+		var a=toNum(start_index),b=toNum(end_index);
 		if(!checkIndex(a,b))
 			throw new TypeError("Invalid index values");
 		//If no error is thrown backup the current array
@@ -182,12 +180,13 @@ function SmartArray(){
 	};
 	self.replaceItem=function(item_index,newObj,lazyVal){
 		//lazyVal-->don't check for invalid indexes
+		var index=toNum(item_index);
 		if(!lazyVal)
-			if(!checkIndex(item_index))
+			if(!checkIndex(index))
 				throw new TypeError("Invalid Index");
 		backup();
-		_array[item_index]=newObj;
-		self[item_index]=newObj;
+		_array[index]=newObj;
+		self[index]=newObj;
 		if(lazyVal)
 			updateLength(_array);
 		return _array;
