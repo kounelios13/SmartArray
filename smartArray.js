@@ -1,11 +1,10 @@
 "use strict";
 function SmartArray(){
-	var isBackupEnabled=true;
-	var self=this;
-	var noDuplicates=false;
+	var isBackupEnabled=true,noDuplicates=false,self=this;
 	function checkIndex(){
 		var args=arguments,ar=_array,a=b=args[0],len=ar.length;
 		var twoArgs=arguments.length > 1;
+		//check if we want to check 2 indices
 		if(twoArgs){
 			b = args[1];
 			if(typeof b != 'number')
@@ -22,8 +21,7 @@ function SmartArray(){
 		return parseInt(i);
 	}
 	function shuffle(a){
-		var j, x, i;
-		i=a.length;
+		var j, x,i=a.length;
 		while(i){
 			j = Math.floor(Math.random() * i);
 		    x = a[i - 1];
@@ -92,16 +90,14 @@ function SmartArray(){
 		return unique_set;		
 	};
 	self.frequency=function(item){
-		var counter=0;
-		var arr=_array;
-		for(var i=0,max=arr.length;i<max;i++)
+		var counter=0,arr=_array,max=ar.length,i;
+		for(i=0;i<max;i++)
 			if(item==arr[i])
 				counter++;
 		return counter;	
 	};
 	self.topItem=function(){
 		var array=_array.slice();
-		array.sort();
 		var max_freq=self.frequency(array[0]);
 		var max_item=array[0];
 		for(var i=0,max=array.length;i<max;i++)
@@ -170,7 +166,6 @@ function SmartArray(){
 		return shuffle(_array.slice())[0];
 	};
 	self.swap=function(start_index,end_index){
-		var array_max=self.length;
 		var a=start_index,b=end_index;
 		if(!checkIndex(a,b))
 			throw new TypeError("Invalid index values");
