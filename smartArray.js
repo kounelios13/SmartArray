@@ -2,7 +2,7 @@
 function SmartArray(){
 	var isBackupEnabled=true,noDuplicates=false,self=this;
 	function toNum(i){
-		return 'number'===typeof i?i:_array.indexOf(i);
+		return 'number'=== typeof i?i:_array.indexOf(i);
 	}
 	function checkIndex(){
 		var args=arguments,ar=_array,a=args[0],len=ar.length,b;
@@ -10,7 +10,7 @@ function SmartArray(){
 		//check if we want to check 2 indices
 		if(twoArgs)
 			b = args[1];
-		return !twoArgs? (a>-1 && a<len):(a >-1 && b >-1) && (a != b) &&  (a < len &&  b < len);
+		return (a >-1 && a < len) && (twoArgs? b!=a && b >-1 && b<len:1);
 	}
 	function lt(a,b) {
     	return ('number'=== typeof (a && b))?a-b:(a+"").localeCompare(b);

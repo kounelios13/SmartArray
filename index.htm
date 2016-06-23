@@ -11,18 +11,8 @@
 		$(document).ready(function(){
 			$(".btn-group .btn-info").removeClass("btn-info").addClass("btn-success").css("margin","1px");
 		});
-		var a=((a,b)=>new SmartArray(a,b));
-		var ar=a([0,1,2,3,4,5],true);
-		var demo={
-			push:function(){
-				var vals=prompt("Enter values to push seperated by ','").split(',');
-				while(vals.length)
-					ar.push(vals.shift());
-			},
-			reverse:()=>ar.reverse(),
-			getUniqueItems:()=>ar.getUniqueItems(),
-
-		};
+		var x = new SmartArray();
+		x.push('a','b','c','d','e');
 	</script>
 	<style type="text/css">
 		body{
